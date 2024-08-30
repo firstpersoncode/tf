@@ -1,7 +1,8 @@
 #!/bin/bash
 sudo apt-get update
 cd /home/ubuntu
-
+touch hello.txt
+echo "Hello World" > hello.txt
 # Setup docker
 sudo apt install docker.io -y
 sudo usermod -aG docker ubuntu
