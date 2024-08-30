@@ -18,7 +18,7 @@ module "node" {
   source                    = "./node"
   ami_id                    = var.ec2_ami_id
   instance_type             = "t2.micro"
-  tag_name                  = "node025:Ubuntu Linux EC2"
+  tag_name                  = "node026:Ubuntu Linux EC2"
   public_key                = var.public_key
   subnet_id                 = tolist(module.networking.dev_proj_1_public_subnets)[0]
   sg_for_node           = [module.security_group.sg_ec2_sg_ssh_http_id, module.security_group.sg_ec2_node_port_3000]
@@ -37,12 +37,12 @@ module "lb_target_group" {
 
 module "alb" {
   source                    = "./load-balancer"
-  lb_name                   = "node025-alb"
+  lb_name                   = "node026-alb"
   is_external               = false
   lb_type                   = "application"
   sg_enable_ssh_https       = module.security_group.sg_ec2_sg_ssh_http_id
   subnet_ids                = tolist(module.networking.dev_proj_1_public_subnets)
-  tag_name                  = "node025-alb"
+  tag_name                  = "node026-alb"
   lb_target_group_arn       = module.lb_target_group.dev_proj_1_lb_target_group_arn
   ec2_instance_id           = module.node.node_ec2_instance_id
   lb_listner_port           = 80
@@ -56,13 +56,13 @@ module "alb" {
 
 module "hosted_zone" {
   source          = "./hosted-zone"
-  domain_name     = "dev-node025.shadowghosts.xyz"
+  domain_name     = "dev-node026.shadowghosts.xyz"
   aws_lb_dns_name = module.alb.aws_lb_dns_name
   aws_lb_zone_id  = module.alb.aws_lb_zone_id
 }
 
 module "aws_ceritification_manager" {
   source         = "./certificate-manager"
-  domain_name    = "dev-node025.shadowghosts.xyz"
+  domain_name    = "dev-node026.shadowghosts.xyz"
   hosted_zone_id = module.hosted_zone.hosted_zone_id
 }
