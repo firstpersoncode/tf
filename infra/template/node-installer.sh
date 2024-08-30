@@ -20,9 +20,13 @@ docker-compose --version
 # setup node
 git clone https://github.com/firstpersoncode/tf.git
 cd tf
-
-# creae .env file
-echo "SONARQUBE_URL=http://localhost:9000" > .env
-echo "SONARQUBE_LOGIN=1
+echo "POSTGRES_USER=postgres" >> .env
+echo "POSTGRES_PASSWORD=postgres" >> .env
+echo "POSTGRES_NAME=postgres" >> .env
+echo "PGADMIN_DEFAULT_EMAIL=pgadmin@pgadmin.com" >> .env
+echo "PGADMIN_DEFAULT_PASSWORD=pgadmin" >> .env
+echo "SONARQUBE_JDBC_USERNAME=sonar" >> .env
+echo "SONARQUBE_JDBC_PASSWORD=sonar" >> .env
+echo "SONARQUBE_JDBC_URL=jdbc:postgresql://db:5432/sonar" >> .env
 
 docker-compose up -d --build

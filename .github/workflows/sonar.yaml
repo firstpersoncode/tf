@@ -66,7 +66,6 @@ jobs:
           POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
           POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
           POSTGRES_NAME: ${{ secrets.POSTGRES_NAME }}
-          ALLOWED_ORIGINS: ${{ vars.ALLOWED_ORIGINS }}
         run: |
           echo "APP_NAME=$APP_NAME" > .env
           echo "APP_HOST=$APP_HOST" >> .env
@@ -74,7 +73,6 @@ jobs:
           echo "POSTGRES_HOST=$POSTGRES_HOST" >> .env
           echo "POSTGRES_PORT=$POSTGRES_PORT" >> .env
           echo "POSTGRES_NAME=$POSTGRES_NAME" >> .env
-          echo "ALLOWED_ORIGINS=$ALLOWED_ORIGINS" >> .env
           docker-compose up -d --build
 
       # - name: docker pull image

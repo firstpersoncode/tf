@@ -57,13 +57,13 @@ module "alb" {
 
 module "hosted_zone" {
   source          = "./hosted-zone"
-  domain_name     = "dev-node022.shadowghosts.xyz"
+  domain_name     = "dev-node023.shadowghosts.xyz"
   aws_lb_dns_name = module.alb.aws_lb_dns_name
   aws_lb_zone_id  = module.alb.aws_lb_zone_id
 }
 
 module "aws_ceritification_manager" {
   source         = "./certificate-manager"
-  domain_name    = "dev-node022.shadowghosts.xyz"
+  domain_name    = "dev-node023.shadowghosts.xyz"
   hosted_zone_id = module.hosted_zone.hosted_zone_id
 }
