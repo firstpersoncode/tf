@@ -2,9 +2,9 @@
 sudo apt-get update
 touch hello.txt
 echo "Hello World" > hello.txt
+
 # Setup docker
 # sudo apt install docker.io -y
-# sleep 20
 # sudo usermod -aG docker ubuntu
 # newgrp docker
 # sudo chmod 777 /var/run/docker.sock
@@ -14,7 +14,6 @@ echo "Hello World" > hello.txt
 
 # Setup docker compose
 # sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-# sleep 20
 # sudo chmod +x /usr/local/bin/docker-compose
 # docker-compose --version
 
