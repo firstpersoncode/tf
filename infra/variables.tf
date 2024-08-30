@@ -37,3 +37,28 @@ variable "ec2_ami_id" {
   type        = string
   description = "DevOps Project 1 AMI Id for EC2 instance"
 }
+
+variable "region" {
+  type        = string
+  description = "AWS Region" 
+}
+
+variable "domain_name" {
+  type        = string
+  description = "Domain name"
+}
+
+variable "endpoint_name" {
+  type        = string
+  description = "Endpoint name"
+}
+
+variable "home_path" {
+  type        = string
+  description = "Home path"
+}
+
+variable "rsa_file" {
+  type        = string
+  description = "rsa path"
+}

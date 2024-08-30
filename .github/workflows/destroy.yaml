@@ -1,0 +1,22 @@
+name: Destroy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  destroy:
+    name: Destroy
+    runs-on: [self-hosted]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Stop and remove container
+        run: docker stop app || true && docker rm app || true
+
+      # - name: Update kubeconfig
+      #   run: aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }}
+
+      # - name: Destroy kubernetes
+      #   run: kubectl delete -f deployment.service.yaml
