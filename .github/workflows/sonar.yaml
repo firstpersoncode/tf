@@ -1,39 +1,93 @@
-name: Scan
+name: Build,Analyze,Scan,Deploy
 
 on:
-  pull_request:
+  push:
     branches:
       - master
-    types:
-      - opened
 
 jobs:
   build:
-    name: Scan
+    name: Build
     runs-on: [self-hosted]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Build and analyze with SonarQube
-        uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      # - name: Build and analyze with SonarQube
+      #   uses: sonarsource/sonarqube-scan-action@master
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       # If you wish to fail your job when the Quality Gate is red, uncomment the
       # following lines. This would typically be used to fail a deployment.
-      - uses: sonarsource/sonarqube-quality-gate-action@master
-        timeout-minutes: 5
+      # - uses: sonarsource/sonarqube-quality-gate-action@master
+      #   timeout-minutes: 5
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # - name: npm install dependency
+      #   run: npm install
+      # - name: Trivy file scan
+      #   run: trivy fs . > trivyfs.txt
+      # - name: Docker Build and push
+      #   env:
+      #     APP_NAME: ${{ env.APP_NAME }}
+      #     APP_HOST: ${{ env.APP_HOST }}
+      #     APP_PORT: ${{ env.APP_PORT }}
+      #     POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+      #     POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+      #     POSTGRES_NAME: ${{ secrets.POSTGRES_NAME }}
+      #     ALLOWED_ORIGINS: ${{ env.ALLOWED_ORIGINS }}
+      #   run: |
+      #     echo "APP_NAME=${{ vars.APP_NAME }}" > .env
+      #     echo "APP_HOST=${{ vars.APP_HOST }}" >> .env
+      #     echo "APP_PORT=${{ vars.APP_PORT }}" >> .env
+      #     echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> .env
+      #     echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
+      #     echo "POSTGRES_NAME=${{ secrets.POSTGRES_NAME }}" >> .env
+      #     echo "ALLOWED_ORIGINS=${{ vars.ALLOWED_ORIGINS }}" >> .env
+      #     docker build -t nest-docker .
+      #     docker tag nest-docker ${{ secrets.DOCKER_USERNAME }}/nest-docker:latest
+      #     docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      #     docker push ${{ secrets.DOCKER_USERNAME }}/nest-docker
+      #   env:
+      #     DOCKER_CLI_ACI: 1
+
+  deploy:
+    needs: build
+    name: Deploy
+    runs-on: [self-hosted]
+    steps:
+      - name: docker compose
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: npm install dependency
-        run: npm install
-      - name: Trivy file scan
-        run: trivy fs . > trivyfs.txt
-      - name: Docker Build and push
-        run: docker build -t nest-docker .
-        env:
-          DOCKER_CLI_ACI: 1
-      - name: Image scan
-        run: trivy image nest-docker:latest > trivyimage.txt
+          APP_NAME: ${{ vars.APP_NAME }}
+          APP_HOST: ${{ vars.APP_HOST }}
+          APP_PORT: ${{ vars.APP_PORT }}
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+          POSTGRES_NAME: ${{ secrets.POSTGRES_NAME }}
+          ALLOWED_ORIGINS: ${{ vars.ALLOWED_ORIGINS }}
+        run: |
+          echo "APP_NAME=$APP_NAME" > .env
+          echo "APP_HOST=$APP_HOST" >> .env
+          echo "APP_PORT=$APP_PORT" >> .env
+          echo "POSTGRES_HOST=$POSTGRES_HOST" >> .env
+          echo "POSTGRES_PORT=$POSTGRES_PORT" >> .env
+          echo "POSTGRES_NAME=$POSTGRES_NAME" >> .env
+          echo "ALLOWED_ORIGINS=$ALLOWED_ORIGINS" >> .env
+          docker-compose up -d --build
+
+      # - name: docker pull image
+      #   run: docker pull ${{ secrets.DOCKER_USERNAME }}/nest-docker:latest
+      # - name: Image scan
+      #   run: trivy image ${{ secrets.DOCKER_USERNAME }}/nest-docker:latest > trivyimagedeploy.txt
+      # - name: Check container and remove
+      #   run: docker stop app || true && docker rm app || true
+      # - name: Deploy to container
+      #   run: docker run -d --name app -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/nest-docker:latest
+      # - name: Output Load Balancer DNS
+      #   run: echo "Load Balancer DNS ${{ steps.terraform.outputs.lb_dns_name }}"
+      # - name: Update kubeconfig
+      #   run: aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }}
+      # - name: Deploy to kubernetes
+      #   run: kubectl apply -f deployment.service.yaml

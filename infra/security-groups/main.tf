@@ -1,13 +1,13 @@
 variable "ec2_sg_name" {}
 variable "vpc_id" {}
-variable "ec2_jenkins_sg_name" {}
+variable "ec2_node_sg_name" {}
 
 output "sg_ec2_sg_ssh_http_id" {
   value = aws_security_group.ec2_sg_ssh_http.id
 }
 
-output "sg_ec2_jenkins_port_8080" {
-  value = aws_security_group.ec2_jenkins_port_8080.id
+output "sg_ec2_node_port_3000" {
+  value = aws_security_group.ec2_node_port_3000.id
 }
 
 resource "aws_security_group" "ec2_sg_ssh_http" {
@@ -56,17 +56,17 @@ resource "aws_security_group" "ec2_sg_ssh_http" {
   }
 }
 
-resource "aws_security_group" "ec2_jenkins_port_8080" {
-  name        = var.ec2_jenkins_sg_name
-  description = "Enable the Port 8080 for jenkins"
+resource "aws_security_group" "ec2_node_port_3000" {
+  name        = var.ec2_node_sg_name
+  description = "Enable the Port 3000 for node"
   vpc_id      = var.vpc_id
 
   # ssh for terraform remote exec
   ingress {
-    description = "Allow 8080 port to access jenkins"
+    description = "Allow 3000 port to access node"
     cidr_blocks = ["0.0.0.0/0"]
-    from_port   = 8080
-    to_port     = 8080
+    from_port   = 3000
+    to_port     = 3000
     protocol    = "tcp"
   }
 
