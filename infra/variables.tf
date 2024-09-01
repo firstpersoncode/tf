@@ -38,6 +38,11 @@ variable "ec2_ami_id" {
   description = "DevOps Project 1 AMI Id for EC2 instance"
 }
 
+variable "ec2_ami_instance" {
+  type        = string
+  description = "DevOps Project 1 AMI Id for EC2 instance type"
+}
+
 variable "region" {
   type        = string
   description = "AWS Region" 

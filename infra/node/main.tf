@@ -15,7 +15,7 @@ output "node_ec2_instance_id" {
   value = aws_instance.node_ec2_instance_ip.id
 }
 
-output "dev_proj_ec2_instance_public_ip" {
+output "node096_ec2_instance_public_ip" {
   value = aws_instance.node_ec2_instance_ip.public_ip
 }
 

@@ -1,6 +1,5 @@
 variable "ec2_sg_name" {}
 variable "vpc_id" {}
-variable "ec2_node_sg_name" {}
 
 output "sg_ec2_sg_ssh_http_id" {
   value = aws_security_group.ec2_sg_ssh_http.id
@@ -57,7 +56,7 @@ resource "aws_security_group" "ec2_sg_ssh_http" {
 }
 
 resource "aws_security_group" "ec2_node_port_3000" {
-  name        = var.ec2_node_sg_name
+  name        = "Allow port 3000 for node"
   description = "Enable the Port 3000 for node"
   vpc_id      = var.vpc_id
 
@@ -70,8 +69,23 @@ resource "aws_security_group" "ec2_node_port_3000" {
     protocol    = "tcp"
   }
 
+  ingress {
+    description = "Allow 9000 port to access sonarqube"
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 9000
+    to_port     = 9000
+    protocol    = "tcp"
+  }
+
+  ingress {
+    description = "Allow 5050 port to access dbadmin"
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 5050
+    to_port     = 5050
+    protocol    = "tcp"
+  }
+
   tags = {
     Name = "Security Groups to allow SSH(22) and HTTP(80)"
   }
 }
-
