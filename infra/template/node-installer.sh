@@ -18,9 +18,6 @@ echo "POSTGRES_NAME=postgres" >> .env
 echo "PGADMIN_DEFAULT_EMAIL=pgadmin@pgadmin.com" >> .env
 echo "PGADMIN_DEFAULT_PASSWORD=pgadmin" >> .env
 echo "SONARQUBE_JDBC_URL=jdbc:postgresql://postgres:5432/sonar" >> .env
-echo "SONARQUBE_JDBC_USERNAME=sonar" >> .env
-echo "SONARQUBE_JDBC_PASSWORD=sonar" >> .env
 docker-compose up -d
-# # bootstraps
-# docker build -t app .
-# docker run --name app -p 3000:3000 -d app
+docker build -t app .
+docker run --name app -p 3000:3000 -d app

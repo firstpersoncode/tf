@@ -10,16 +10,16 @@ module "networking" {
 module "security_group" {
   source              = "./security-groups"
   ec2_sg_name         = "SG for EC2 to enable SSH(22), HTTPS(443) and HTTP(80)"
-  vpc_id              = module.networking.node096_vpc_id
+  vpc_id              = module.networking.node097_vpc_id
 }
 
 module "node" {
   source                    = "./node"
   ami_id                    = var.ec2_ami_id
   instance_type             = var.ec2_ami_instance
-  tag_name                  = "node096:Ubuntu Linux EC2"
+  tag_name                  = "node097:Ubuntu Linux EC2"
   public_key                = var.public_key
-  subnet_id                 = tolist(module.networking.node096_public_subnets)[0]
+  subnet_id                 = tolist(module.networking.node097_public_subnets)[0]
   sg_for_node               = [
                               module.security_group.sg_ec2_sg_ssh_http_id,
                               module.security_group.sg_ec2_node_port_3000,
@@ -30,44 +30,44 @@ module "node" {
 
 module "lb_target_group" {
   source                   = "./load-balancer-target-group"
-  lb_target_group_name     = "node096-lb-target-group"
+  lb_target_group_name     = "node097-lb-target-group"
   lb_target_group_port     = 3000
   lb_target_group_protocol = "HTTP"
-  vpc_id                   = module.networking.node096_vpc_id
+  vpc_id                   = module.networking.node097_vpc_id
   ec2_instance_id          = module.node.node_ec2_instance_id
 }
 
 module "alb" {
   source                    = "./load-balancer"
-  lb_name                   = "node096-alb"
+  lb_name                   = "node097-alb"
   is_external               = false
   lb_type                   = "application"
   sg_enable_ssh_https       = module.security_group.sg_ec2_sg_ssh_http_id
-  subnet_ids                = tolist(module.networking.node096_public_subnets)
-  tag_name                  = "node096-alb"
-  lb_target_group_arn       = module.lb_target_group.node096_lb_target_group_arn
+  subnet_ids                = tolist(module.networking.node097_public_subnets)
+  tag_name                  = "node097-alb"
+  lb_target_group_arn       = module.lb_target_group.node097_lb_target_group_arn
   ec2_instance_id           = module.node.node_ec2_instance_id
   lb_listner_port           = 80
   lb_listner_protocol       = "HTTP"
   lb_listner_default_action = "forward"
   lb_https_listner_port     = 443
   lb_https_listner_protocol = "HTTPS"
-  node096_acm_arn        = module.aws_ceritification_manager.node096_acm_arn
+  node097_acm_arn        = module.aws_ceritification_manager.node097_acm_arn
   lb_target_group_attachment_port = 3000
 }
 
 module "hosted_zone" {
   source          = "./hosted-zone"
-  domain_name     = "node096.shadowghosts.xyz"
-  dbadmin_domain_name = "dbadmin-node096.shadowghosts.xyz"
-  sonarqube_domain_name = "sonarqube-node096.shadowghosts.xyz"
-  ec2_instance_public_ip = module.node.node096_ec2_instance_public_ip
+  domain_name     = "node097.shadowghosts.xyz"
+  dbadmin_domain_name = "dbadmin-node097.shadowghosts.xyz"
+  sonarqube_domain_name = "sonarqube-node097.shadowghosts.xyz"
+  ec2_instance_public_ip = module.node.node097_ec2_instance_public_ip
   aws_lb_dns_name = module.alb.aws_lb_dns_name
   aws_lb_zone_id  = module.alb.aws_lb_zone_id
 }
 
 module "aws_ceritification_manager" {
   source         = "./certificate-manager"
-  domain_name    = "node096.shadowghosts.xyz"
+  domain_name    = "node097.shadowghosts.xyz"
   hosted_zone_id = module.hosted_zone.hosted_zone_id
 }
