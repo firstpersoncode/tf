@@ -60,16 +60,11 @@ jobs:
     steps:
       - name: docker compose
         env:
-          APP_NAME: ${{ vars.APP_NAME }}
-          APP_HOST: ${{ vars.APP_HOST }}
-          APP_PORT: ${{ vars.APP_PORT }}
-          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
-          POSTGRES_NAME: ${{ secrets.POSTGRES_NAME }}
+          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+          NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}
         run: |
-          echo "POSTGRES_DB=$POSTGRES_DB" >> .env
-          echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> .env
-          echo "POSTGRES_NAME=$POSTGRES_NAME" >> .env
+          echo "NEXT_PUBLIC_SANITY_PROJECT_ID=ss2i7z2g" >> .env
+          echo "NEXT_PUBLIC_SANITY_DATASET=production" >> .env
           docker build -t app .
           docker run --name app -p 3000:3000 -d app
 
