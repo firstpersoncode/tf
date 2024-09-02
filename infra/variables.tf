@@ -72,3 +72,23 @@ variable "rsa_file" {
   type        = string
   description = "rsa path"
 }
+
+variable "rds_db_name" {
+  type        = string
+  description = "RDS DB name"
+}
+
+variable "rds_db_username" {
+  type        = string
+  description = "RDS DB username"
+}
+
+variable "rds_db_password" {
+  type        = string
+  description = "RDS DB password"
+}
+
+variable "rds_db_instance_class" {
+  type        = string
+  description = "RDS DB instance class"
+}

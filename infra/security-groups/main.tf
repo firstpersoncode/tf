@@ -9,6 +9,10 @@ output "sg_ec2_node_port_3000" {
   value = aws_security_group.ec2_node_port_3000.id
 }
 
+output "sg_db_port" {
+  value = aws_security_group.db_port.id
+}
+
 resource "aws_security_group" "ec2_sg_ssh_http" {
   name        = var.ec2_sg_name
   description = "Enable the Port 22(SSH) & Port 80(http)"
@@ -86,6 +90,25 @@ resource "aws_security_group" "ec2_node_port_3000" {
   }
 
   tags = {
-    Name = "Security Groups to allow SSH(22) and HTTP(80)"
+    Name = "Security Groups to allow apps"
+  }
+}
+
+resource "aws_security_group" "db_port" {
+  name        = "Allow port 5432 for db"
+  description = "Enable the Port 5432 for db"
+  vpc_id      = var.vpc_id
+
+  # ssh for terraform remote exec
+  ingress {
+    description = "Allow 5432 port to access db"
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+  }
+
+  tags = {
+    Name = "Security Groups to allow db"
   }
 }
